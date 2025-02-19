@@ -1,0 +1,23 @@
+{
+    "name": "JONASNFT",
+    "description": "This is my first NFT stored on IPFS.",
+    "image": "ipfs://bafkreih5xvve6e7y4lvgzhgkckwzmoduhet6bfsmnj64i3zyyan52fydji",
+    "attributes": [
+        {
+        "trait_type": "Hair Color",
+        "value": "Blue"
+        },
+        {
+        "trait_type": "Eye Color",
+        "value": "Blue"
+        },
+        {
+        "trait_type": "Accessory",
+        "value": "Cup of Coffee"
+        },
+        {
+        "trait_type": "Scar",
+        "value": "Vertical Scar Over One Eye"
+        }
+    ]
+}
