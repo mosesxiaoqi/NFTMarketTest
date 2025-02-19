@@ -8,6 +8,7 @@ contract JONASNFT is ERC721 {
 
     uint256 private _tokenId;
     mapping(uint256 tokenId => string) private _tokenURIs;
+    mapping(address => uint256[]) private _ownedTokens;
 
     event MetadataSet(uint256 tokenId, string _tokenURI);
 
@@ -15,10 +16,13 @@ contract JONASNFT is ERC721 {
         _tokenId = 0;
     }
 
-    function mint(address to, string memory _tokenURI) public {
+    function mint(address to, string memory _tokenURI) public returns (uint256) {
         _safeMint(to, _tokenId);
         _setTokenURI(_tokenId, _tokenURI);
+        _ownedTokens[to].push(_tokenId);
+        uint256 tId = _tokenId;
         _tokenId++;
+        return tId;
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {

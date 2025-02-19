@@ -3,7 +3,7 @@
 pragma solidity >=0.8.24 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";  
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";  
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";  
 import "./MyNFT.sol";   
 import "./ERC20Token/MyTokenV2.sol";  
 import "./ERC20Token/ITokenReceived.sol";
@@ -37,7 +37,7 @@ contract NFTMarket is TokenReceived {
             revert("Not owner");
         }
         // 检查是否已经上架
-        if (listings[tokenId].active == false) {
+        if (tradeable[tokenId].active != false) {
             revert("Already listed");
         }
         if (price <= 0) {
@@ -64,24 +64,38 @@ contract NFTMarket is TokenReceived {
         if (IERC20(paymentToken).allowance(msg.sender, address(this)) == 0) {
             revert("Not approved");
         }
-        if (listings[tokenId].active == false) {
+        if (tradeable[tokenId].active == false) {
             revert("Not listed");
         }
+        if (IERC20(paymentToken).balanceOf(msg.sender) < tradeable[tokenId].price) {
+            revert("Insufficient balance");
+        }
+        if (IERC20(paymentToken).allowance(msg.sender, address(this)) < tradeable[tokenId].price) {
+            revert("Insufficient allowance");
+        }
 
-        _transNFT(nftContract).ownerOf(tokenId), msg.sender, tokenId);
+        _transNFT((nftContract).ownerOf(tokenId), msg.sender, tokenId);
 
         // 转移代币
-        IERC20(paymentToken).transferFrom(msg.sender, IERC721(nftContract).ownerOf(tokenId), tradeable[msg.sender][tokenId]);
+        IERC20(paymentToken).transferFrom(msg.sender, IERC721(nftContract).ownerOf(tokenId), tradeable[tokenId].price);
 
-        emit NFTBought(tokenId, msg.sender, tradeable[msg.sender][tokenId]);
+        emit NFTBought(tokenId, msg.sender, tradeable[tokenId].price);
     }
 
     function cancelListing(uint256 tokenId) external {
-        require(tradeable.seller == msg.sender, "You are not the seller");
-        require(tradeable.active, "NFT is not listed");
+        require(tradeable[tokenId].seller == msg.sender, "You are not the seller");
+        require(tradeable[tokenId].active, "NFT is not listed");
 
         delete tradeable[tokenId];
     }
+
+    function getNFTPricing(uint256 tokenId) public view returns (uint256) {
+        return tradeable[tokenId].price;
+    }
+
+    function getNFTSeller(uint256 tokenId) public view returns (address) {
+        return tradeable[tokenId].seller;
+    }   
 
     function tokensReceived(
         address operator,
@@ -109,6 +123,6 @@ contract NFTMarket is TokenReceived {
     function _transNFT(address _from, address _to, uint256 _tokenId) internal {
         IERC721(nftContract).transferFrom(_from, _to, _tokenId);
         // 移除 tradeable 记录
-        delete tradeable[tokenId];
+        delete tradeable[_tokenId];
     }   
 }
