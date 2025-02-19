@@ -1,0 +1,3 @@
+[submodule "MarketTest/lib/forge-std"]
+	path = MarketTest/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
