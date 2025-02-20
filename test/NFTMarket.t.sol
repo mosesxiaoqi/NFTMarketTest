@@ -59,6 +59,33 @@ contract NFTMarketTest is Test {
         // 测试购买金额不足失败
         _test_processPaymentMismatch();
     }
+    /**
+    * forge-config: default.fuzz.runs = 100
+    * forge-config: default.fuzz.max-test-rejects = 500
+    * forge-config: default.fuzz.show-logs = true
+   */
+    function testFuzz_List(uint256 price) public {
+        _testFuzz_List(price);
+    }
+
+    /**
+    * forge-config: default.fuzz.runs = 100
+    * forge-config: default.fuzz.max-test-rejects = 500
+    * forge-config: default.fuzz.show-logs = true
+   */
+    function testFuzz_Buy(address addr, uint256 price) public {
+        vm.assume(addr != address(0));
+        uint256 tokenID = _testFuzz_List(price);
+        _tokenApprove(addr, price, price);
+        _buy(addr, tokenID);
+    }
+
+    function _testFuzz_List(uint256 price) public returns (uint256) {
+        vm.assume(price > 1 && price < 1000000);
+        address a = makeAddr("fuzz");
+        uint256 tokenID = _available(a, price);
+        return tokenID;
+    }
 
     function _test_BuySuccess() public {
         address s = makeAddr("seller1");
