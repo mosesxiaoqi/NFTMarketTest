@@ -1,0 +1,10 @@
+No files changed, compilation skipped
+
+Ran 4 tests for test/NFTMarket.t.sol:NFTMarketTest
+[PASS] testFuzz_Buy(address,uint256) (runs: 100, μ: 291703, ~: 291711)
+[PASS] testFuzz_List(uint256) (runs: 100, μ: 248387, ~: 248387)
+[PASS] test_List() (gas: 404981)
+[PASS] test_buy() (gas: 1450205)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 16.66ms (26.93ms CPU time)
+
+Ran 1 test suite in 98.89ms (16.66ms CPU time): 4 tests passed, 0 failed, 0 skipped (4 total tests)
